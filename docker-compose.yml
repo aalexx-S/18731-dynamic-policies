@@ -1,0 +1,9 @@
+version: '2.0'
+services:
+  server:
+    build: .
+    image: 18731-policy-server
+    volumes:
+      - ./:/policyserver
+  redis:
+    image: redis
