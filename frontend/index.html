@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Strategy - Responsive HTML Template</title>
+    <title>Dynamic Policies - Network Security</title>
     <!--
 Strategy Template
 http://www.templatemo.com/tm-489-strategy
@@ -38,7 +38,7 @@ http://www.templatemo.com/tm-489-strategy
             <li class="selected">
                 <div class="cd-full-width">
                     <div class="tm-slide-content-div">
-                        <form action="http://dynamicpolicies.xyz/set_policy_file" id="search-form">
+                        <form action="http://dynamicpolicies.xyz:8000/set_policy_file" method="post"  enctype="multipart/form-data" id="search-form">
                             <i class="fa fa-cogs tm-slide-icon"></i>
                             <h2 class="text-uppercase">Dynamic Policies</h2>
                             <p class="m-b-mid">Network Security</p>
@@ -74,7 +74,12 @@ http://www.templatemo.com/tm-489-strategy
 
             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                 <div class="tm-media-text-container">
-                    <h3 class="tm-media-title tm-gray-text">Number of policies: <b id="id_pol_count"> s</b></h3>
+                    <h3 class="tm-media-title tm-gray-text">Number of policies: <b id="id_pol_count"> ...</b></h3>
+                    <h3 class="tm-media-title tm-gray-text">Policy file: </h3>
+                    <textarea id="id_pol_file" rows="10" cols="65">
+                        ...
+                    </textarea>
+
                 </div>
             </div>
         </div>
@@ -170,7 +175,7 @@ http://www.templatemo.com/tm-489-strategy
             </div>
         </div>
 
-        <div class="row tm-media-row tm-flex-container-reverse">
+        <!-- <div class="row tm-media-row tm-flex-container-reverse">
 
             <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 tm-flex-child-2">
                 <img src="img/vyas.png" alt="Image" class="img-fluid img-circle img-thumbnail tm-media-img">
@@ -183,7 +188,7 @@ http://www.templatemo.com/tm-489-strategy
                 </div>
             </div>
 
-        </div>
+        </div> -->
 
 
     </div>
@@ -218,11 +223,23 @@ http://www.templatemo.com/tm-489-strategy
             * http://stackoverflow.com/questions/13525258/twitter-bootstrap-carousel-autoplay-on-load
             -----------------------------------------------------------------------------------------*/
 
-            $.get("http://dynamicpolicies.xyz/get_policy_count", function (data) {
-                alert("Load was performed.");
+            $.get("http://dynamicpolicies.xyz:8000/get_policy_count", function (data) {
+
                 $("#id_pol_count").html(data);
                 
             });
+
+            $.get("http://dynamicpolicies.xyz:8000/get_policy_file", function (data) {
+
+                $("#id_pol_file").html(data);
+
+            });
+
+
+
+
+
+
 
             $('.carousel').carousel({
                 interval: 3000
