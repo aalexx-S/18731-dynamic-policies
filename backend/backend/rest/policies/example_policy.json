@@ -1,0 +1,95 @@
+[
+	{
+		"condition": {
+			"type": "logic",
+			"op": "!=",
+			"input": [
+				{
+					"type": "device",
+					"value": "device1.data1"
+				},
+				{
+					"type": "int",
+					"value": "0"
+				}
+			]
+		},
+		"action": "activate",
+		"rule": "path/to/rule"
+	},
+	{
+		"condition": {
+			"type": "bin",
+			"op": "AND",
+			"input": [
+				{
+					"type": "logic",
+					"op": ">",
+					"input": [
+						{
+							"type": "device",
+							"value": "thermalmeter1.data1"
+						},
+						{
+							"type": "device",
+							"value": "thermalmeter2.data1"
+						}
+					]
+				},
+				{
+					"type": "bin",
+					"op": "OR",
+					"input": [
+						{
+							"type": "logic",
+							"op": ">",
+							"input": [
+								{
+									"type": "device",
+									"value": "device1.data1"
+								},
+								{
+									"type": "float",
+									"value": "0"
+								}
+							]
+						},
+						{
+							"type": "logic",
+							"op": "==",
+							"input": [
+								{
+									"type": "device",
+									"value": "somedevice1.data4"
+								},
+								{
+									"type": "boolean",
+									"value": "true"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"action": "activate",
+		"rule": "path/to/rule2"
+	},
+    {
+        "condition": {
+            "type": "bin",
+            "op": "OR",
+            "input": [
+                {
+                    "type": "boolean",
+                    "value": "true"
+                },
+                {
+                    "type":"boolean",
+                    "value":"false"
+                }
+            ]
+        },
+        "rule": "dummy/path"
+    }
+]

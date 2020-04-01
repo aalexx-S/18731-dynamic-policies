@@ -21,8 +21,24 @@ from backend.rest import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(
-        r'^policy_list',
-        views.policy_list,
-        name='policy_list'
+        r'^get_policy_list',
+        views.get_policy_list,
+        name='get_policy_list'
     ),
+    url(
+        r'^get_policy_count',
+        views.get_policy_count,
+        name='get_policy_counts'
+    ),
+    url(
+        r'^get_policy_file',
+        views.get_policy_file,
+        name='get_policy_file'
+    ),
+    url(
+        r'^set_policy_file',
+        views.set_policy_file,
+        name='set_policy_file'
+    ),
+    
 ]

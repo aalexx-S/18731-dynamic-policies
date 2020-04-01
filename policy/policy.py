@@ -14,7 +14,7 @@ class Policy:
     def evaluate(self):
         re = self.__condition.evaluate()
         if not isinstance(re, bool):
-            raise TypeError('The evaluation retult is not a boolean. Got {0}.'.format(re))
+            raise TypeError('The evaluation result is not a boolean. Got {0}.'.format(re))
         return re
 
     @ property
