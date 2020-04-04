@@ -24,14 +24,15 @@ See explanation below for the definition of "token" and the spec of fields.
 ]
 ```
 
-A input file contains a list of condition-rule dictionaries.
+- A input file contains a list of condition-rule dictionaries.
 
-A condition always starts with a single dictionary called "token".
+- A condition always starts with a single dictionary called "token".
 
-"Input" field is a list of input tokens.
+- "Input" field is a list of input tokens.
 
-Only "type" is required for each token, other fields may be required based on the value of "type".
+- Only "type" is required for each token, other fields may be required based on the value of "type".
 
+- The name for device data should always be formatted like "device\_name.data\_name"("device name"[dot]"data name").  
 
 ### Specs
 
