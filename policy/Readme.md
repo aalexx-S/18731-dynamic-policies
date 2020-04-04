@@ -72,6 +72,8 @@ See explanation below for the definition of "token" and the spec of fields.
 
 	- "float": Format the string in "value" field into float and return it.
 
+		- All equality checks will use ```math.isclose``` if one of the inputs is a float.
+
 	- "boolean": Format the string in the "value" field into boolean and return it.
 
 		Only accept strings: "true" and "false".
