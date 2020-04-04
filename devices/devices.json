@@ -3,12 +3,32 @@
         "id": "0001",
         "name": "HomeMotion",
         "type": "Motion Sensor",
-        "location": "192.168.1.100"
+        "location": "192.168.1.100",
+        "status": [
+            {
+                "name": "powerlevel",
+                "type": "floating"
+            },
+            {
+                "name": "heatlevel",
+                "type": "integer"
+            }
+        ]
     },
     "Stove1": {
         "id": "0002",
         "name": "Stove1",
         "type": "stove",
-        "location": "192.168.1.101"
+        "location": "192.168.1.101",
+        "status": [
+            {
+                "name": "powerlevel",
+                "type": "floating"
+            },
+            {
+                "name": "heatlevel",
+                "type": "integer"
+            }
+        ]
     }
 }
