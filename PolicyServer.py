@@ -18,7 +18,7 @@ class PolicyServer :
 		pass
 
 	def signal(self, iot_status_changes) :
-		print("handle status changes");
+		print("handle status changes")
 
 
 
