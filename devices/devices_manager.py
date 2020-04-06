@@ -2,8 +2,9 @@ from http.server import HTTPServer, BaseHTTPRequestHandler
 from urllib.parse import urlparse, parse_qs
 import json
 import threading
-from device import Device
-from devices_status_db import DevicesStatusDB
+from .device import Device
+from .devices_status_db import DevicesStatusDB
+import os
 
 """
 Main components for managing devices. Called DevicesManager.start() in initialization
@@ -14,8 +15,9 @@ class DevicesManager:
 
     @staticmethod
     def start(status_callback = None):
+        mydir = os.path.dirname(os.path.abspath(__file__))
         # The devices.json serve as a database of available device now.
-        with open('devices.json') as f:
+        with open(os.path.join(mydir, 'devices.json')) as f:
             DevicesManager.alldevs = json.load(f)
             assert DevicesManager.alldevs is not None
         
