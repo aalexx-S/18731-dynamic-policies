@@ -1,4 +1,4 @@
-from devices_manager import DevicesManager
+from devices.devices_manager import DevicesManager
 
 def device_changed(dev, status, value):
     print('Received status update of ' + dev + '.' + status + '=' + value)

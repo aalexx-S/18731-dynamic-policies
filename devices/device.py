@@ -1,4 +1,4 @@
-from devices_status_db import DevicesStatusDB
+from .devices_status_db import DevicesStatusDB
 
 class Device:
     def __init__(self, id, name, type, location):

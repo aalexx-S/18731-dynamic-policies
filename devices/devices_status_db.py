@@ -7,7 +7,7 @@ class DevicesStatusDB:
             raise Exception("Use getInstance()!")
         
         DevicesStatusDB.__instance = self
-        self.r = redis.Redis(host= 'redis', port= '6379')
+        self.r = redis.Redis(host='redis', port='6379')
 
     @staticmethod
     def getInstance():
