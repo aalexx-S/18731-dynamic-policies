@@ -74,6 +74,14 @@ class RuleManager:
 
         return ret
 
+    def get_activated_ids(self):
+        """
+        Get a set of activated ids.
+        Returns:
+            A set of id.
+        """
+        return self.rules
+
     def generate_output(self):
         """
         Generate output.

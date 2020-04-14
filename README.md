@@ -46,6 +46,8 @@ Pass ```True``` at object construction to keep the original content in the outpu
 rule_manager = RuleManager('path_to_output', query_rule_by_id_handle, True)
 ```
 
+You can get all activated policy id by calling ```get_activated_id``` function.
+
 ### FIFO Manager
 
 A simple FIFO management.
