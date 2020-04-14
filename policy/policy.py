@@ -2,10 +2,11 @@
 """A policy entry
 """
 class Policy:
-    def __init__(self, condition, action, rule):
+    def __init__(self, condition, action, rule, idd=None):
         self.__condition = condition
         self.__action = action
         self.__rule = rule
+        self.idd = idd
 
     """Exceptions:
     TypeError:
@@ -28,6 +29,14 @@ class Policy:
     @ property
     def action(self):
         return self.__action
+
+    @property
+    def id(self):
+        return self.idd
+
+    @id.setter
+    def id(self, nid):
+        self.idd = nid
 
     def __str__(self):
         return '{' + '"condition": {0}, "rule": "{1}", "action": "{2}"'.format(self.__condition.__str__(), self.rule, self.action) + '}'

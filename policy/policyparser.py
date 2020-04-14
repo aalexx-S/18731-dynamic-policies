@@ -23,6 +23,9 @@ class PolicyParser:
         self.__name = defaultdict(list)
         # stores all conditions
         self.__conditions = []
+        # stores id to policy mapping
+        self.__id_to_policy = {}
+        self.__next_id = 0
 
     """The actual init function
     seperate this from object creation to enable parallelize
@@ -43,23 +46,34 @@ class PolicyParser:
             if 'action' in c:
                 act = c['action']
                 if act != 'activate' and act != 'deactivate':
-                    raise ValueError('Invalide action. Expect "activate" or "deactivate" but got {0} instead.'.format(act))
+                    raise ValueError('Invalid action. Expecting "activate" or "deactivate" but get {0} instead.'.format(act))
             rule = c['rule']
 
-            policy = Policy(cond, act, rule)
+            policy = Policy(cond, act, rule, self.__next_id)
+            self.__next_id += 1
             self.add_policy(policy)
 
         pf.close()
 
     def add_policy(self, policy):
         self.__conditions.append(policy)
+
         for name in policy.used_name:
             self.__name[name].append(policy)
 
-    def query_policy_by_data_name(self, name):
-        return self.__name[name]
+        self.__id_to_policy[policy.id] = policy
 
-    @ property
+    def query_policy_by_data_name(self, name):
+        # check if policy is removed
+        tmp = []
+        for p in self.__name[name]:
+            if p.id in self.__id_to_policy:
+                tmp.append(p)
+        self.__name[name] = tmp
+
+        return tmp
+
+    @property
     def policies(self):
         return self.__conditions
 
