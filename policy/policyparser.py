@@ -73,6 +73,11 @@ class PolicyParser:
 
         return tmp
 
+    def query_policy_by_id(self, target_id):
+        if target_id not in self.__id_to_policy:
+            return None
+        return self.__id_to_policy[target_id]
+
     @property
     def policies(self):
         return self.__conditions
