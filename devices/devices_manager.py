@@ -21,6 +21,8 @@ class DevicesManager:
         device status.
         :param function status_callback: callback function to receive device update notification
         :param string dev_path: file path that contains list of all devices.
+        :param string redishost: hostname of redis server
+        :param string redisport: port of redis server
         """
         mydir = os.path.dirname(os.path.abspath(__file__))
         if not dev_path:

@@ -31,3 +31,6 @@ class Device:
     
     def get_device_name(self):
         return self.name
+    
+    def get_all_status(self):
+        return list(self.allstatus.keys())

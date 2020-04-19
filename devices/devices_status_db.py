@@ -17,7 +17,6 @@ class DevicesStatusDB:
 
         DevicesStatusDB.__instance = inst
 
-
     def __init__(self, host='redis', port='6379'):
         self.r = redis.Redis(host=host, port=port)
         if DevicesStatusDB.__instance == None:
