@@ -9,6 +9,7 @@ if __name__ == "__main__" :
 
     motiondev = devmgr.find_devices('HomeMotion')
     if motiondev:
+        print(motiondev.list_status())
         print(motiondev.get_all_status())
 
     devmgr.wait()

@@ -1,5 +1,14 @@
 from .devices_status_db import DevicesStatusDB
 
+class DeviceStatus:
+    def __init__(self):
+        self.name = ''
+        self.type = ''
+        self.value = 0
+
+    def __repr__(self):
+        return ('DeviceStatus: %s %s = ' % (self.type, self.name)) + str(self.value)
+
 class Device:
     def parse(self, jsonObj):
         self.id = jsonObj['id']
@@ -27,10 +36,20 @@ class Device:
             return None
 
         db = DevicesStatusDB.default_instance()
-        return db.get_value(self.name, statusname)
+        return db.get_status(self.name, statusname)
     
     def get_device_name(self):
         return self.name
     
-    def get_all_status(self):
+    def list_status(self):
         return list(self.allstatus.keys())
+    
+    def get_all_status(self):
+        result = []
+        for k in self.allstatus:
+            ds = DeviceStatus()
+            ds.value = self.get_status_value(k)
+            ds.name = k
+            ds.type = self.allstatus[k]
+            result.append(ds)
+        return result
