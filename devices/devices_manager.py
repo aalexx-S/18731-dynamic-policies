@@ -10,51 +10,70 @@ import os
 Main components for managing devices. Called DevicesManager.start() in initialization
 """
 class DevicesManager:
-    alldevs = None
-    monitor_thread = None
+    def __init__(self):
+        self.alldevs = {}
+        self.monitor_thread = None
 
-    @staticmethod
-    def start(status_callback = None):
+    def start(self, status_callback = None, dev_path = '', redishost = 'redis', redisport = '6379'):
+        """
+        Call this function to initialize device manager. This function will 
+        read in all available devices and start the HTTP server to monitor
+        device status.
+        :param function status_callback: callback function to receive device update notification
+        :param string dev_path: file path that contains list of all devices.
+        """
         mydir = os.path.dirname(os.path.abspath(__file__))
-        # The devices.json serve as a database of available device now.
-        with open(os.path.join(mydir, 'devices.json')) as f:
-            DevicesManager.alldevs = json.load(f)
-            assert DevicesManager.alldevs is not None
-        
+        if not dev_path:
+            dev_path = os.path.join(mydir, 'devices.json')
+
+        with open(dev_path) as f:
+            devData = json.load(f)
+            assert devData is not None
+            for name in devData:
+                newdev = Device()
+                newdev.parse(devData[name])
+                # name = newdev.get_device_name()
+                self.alldevs[name] = newdev
+
+        db = DevicesStatusDB(redishost, redisport)
+        DevicesStatusDB.set_default(db)
+
         # Create a thread to bring up an HTTP server for devices status monitor
-        monitor_thread = DevicesMonitor.start(status_callback)
+        self.monitor_thread = _DevicesMonitor.start(self, status_callback)
         return
     
-    @staticmethod
-    def wait():
-        if DevicesManager.monitor_thread is not None:
-            DevicesManager.monitor_thread.join()
+    def wait(self):
+        if self.monitor_thread is not None:
+            self.monitor_thread.join()
         return
-
-    @staticmethod
-    def find_devices(devname):
+    
+    def find_devices(self, devname):
         """
         Policy server could use this function to retrieve a device and get its
         status.
         :return Device: The device object
         """
-        if not devname in DevicesManager.alldevs:
+        if not devname in self.alldevs:
             return None
 
-        dev_obj = DevicesManager.alldevs[devname]
-        return Device(dev_obj['id'], dev_obj['name'], dev_obj['type'], dev_obj['location'])
+        return self.alldevs[devname]
+    
+    def get_all_devices():
+        return list(self.alldevs.values())
 
 
-"""
-Simulate the interface that receive updated status from devices.
-"""
-class DevicesMonitor:
+class _DevicesMonitor:
+    """
+    Simulate the interface that receive updated status from devices.
+    """
+
     callback = None
+    devManager = None
 
     class DeviceThread(threading.Thread):
         def run(self):
             server_address = ("localhost", 8080)
-            handler_class = MyHandler
+            handler_class = _MyHandler
             server_class = HTTPServer
 
             httpd = HTTPServer(server_address, handler_class)
@@ -68,35 +87,38 @@ class DevicesMonitor:
 
     
     @staticmethod
-    def start(cb):
-        DevicesMonitor.callback = cb
-        dev_thread = DevicesMonitor.DeviceThread()
+    def start(manager, cb):
+        assert manager is not None
+        _DevicesMonitor.callback = cb
+        _DevicesMonitor.devManager = manager
+        dev_thread = _DevicesMonitor.DeviceThread()
         dev_thread.start()
+
         return dev_thread
 
     @staticmethod
     def update_status(devname, status, value):
         # from devices_manager import DevicesManager
-        if DevicesManager.find_devices(devname) is None:
+        if _DevicesMonitor.devManager.find_devices(devname) is None:
             print('device %s not exist' % (devname))
             return
         
-        db = DevicesStatusDB.getInstance()
+        db = DevicesStatusDB.default_instance()
         db.set_status(devname, status, value)
-        if DevicesMonitor.callback is not None:
-            DevicesMonitor.callback(devname, status, value)
+        if _DevicesMonitor.callback is not None:
+            _DevicesMonitor.callback(devname, status, value)
     
 
-class MyHandler(BaseHTTPRequestHandler):
+class _MyHandler(BaseHTTPRequestHandler):
     def _set_response(self, code):
         self.send_response(code)
         self.send_header('Content-type', 'application/json')
         self.end_headers()
 
     def do_GET(self):
-        # example: this is how you get path and command
-        print(self.path)
-        print(self.command)
+        # # example: this is how you get path and command
+        # print(self.path)
+        # print(self.command)
 
         q_part = parse_qs(urlparse(self.path).query)
 
@@ -107,7 +129,7 @@ class MyHandler(BaseHTTPRequestHandler):
             status_value = q_part['status_value'][0]
 
             print('device=%s status_name=%s status_value=%s' % (device, status_name, status_value))
-            DevicesMonitor.update_status(device, status_name, status_value)
+            _DevicesMonitor.update_status(device, status_name, status_value)
             self._set_response(200)
             return
 
