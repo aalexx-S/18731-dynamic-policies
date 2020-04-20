@@ -34,9 +34,5 @@ class Policy:
     def id(self):
         return self.idd
 
-    @id.setter
-    def id(self, nid):
-        self.idd = nid
-
     def __str__(self):
         return '{' + '"condition": {0}, "rule": "{1}", "action": "{2}"'.format(self.__condition.__str__(), self.rule, self.action) + '}'
