@@ -34,5 +34,8 @@ class Policy:
     def id(self):
         return self.idd
 
+    def __repr__(self):
+        return f'Policy(id={self.idd}, rule={self.rule})'
+
     def __str__(self):
         return '{' + '"condition": {0}, "rule": "{1}", "action": "{2}"'.format(self.__condition.__str__(), self.rule, self.action) + '}'
