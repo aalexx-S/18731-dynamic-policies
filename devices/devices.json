@@ -7,11 +7,11 @@
         "status": [
             {
                 "name": "powerlevel",
-                "type": "floating"
+                "type": "float"
             },
             {
-                "name": "heatlevel",
-                "type": "integer"
+                "name": "motion",
+                "type": "boolean"
             }
         ]
     },
@@ -23,7 +23,7 @@
         "status": [
             {
                 "name": "powerlevel",
-                "type": "floating"
+                "type": "float"
             },
             {
                 "name": "heatlevel",

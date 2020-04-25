@@ -1,3 +1,9 @@
+# Overview
+The intended usage of the is the main function all the DevicesManager.start()
+to initialize this module. After the initialization, the policy evaluator
+could call findDevices() or get_all_devices() to retrieve device object and 
+then check the status of those devices.
+
 # API
 
 ## DeviceManager
@@ -21,3 +27,11 @@ get_status(status_name)
   - name of the status to retrieve
 - return: value of the status
 
+# Simulate device status update
+Use this command to update device status
+`wget http://localhost:8080/?device=<deviceName>&status_name=<statusName>&status_value=<statusValue>`
+
+Three params (Refer to devices.json of valid value to these fields)
+- device
+- status_name
+- staatus_value
