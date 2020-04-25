@@ -60,7 +60,7 @@ class DevicesManager:
 
         return self.alldevs[devname]
     
-    def get_all_devices():
+    def get_all_devices(self):
         return list(self.alldevs.values())
 
 

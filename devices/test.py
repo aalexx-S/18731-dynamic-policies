@@ -11,5 +11,6 @@ if __name__ == "__main__" :
     if motiondev:
         print(motiondev.list_status())
         print(motiondev.get_all_status())
+        print(devmgr.get_all_devices())
 
     devmgr.wait()
