@@ -49,13 +49,16 @@ class PolicyParser:
                     raise ValueError('Invalid action. Expecting "activate" or "deactivate" but get {0} instead.'.format(act))
             rule = c['rule']
 
-            policy = Policy(cond, act, rule, self.__next_id)
-            self.__next_id += 1
+            policy = Policy(cond, act, rule)
             self.add_policy(policy)
 
         pf.close()
 
     def add_policy(self, policy):
+        # assign id when adding
+        policy._set_id(self.__next_id)
+        self.__next_id += 1
+
         self.__conditions.append(policy)
 
         for name in policy.used_name:
