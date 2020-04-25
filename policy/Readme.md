@@ -134,6 +134,12 @@ Use member function ```query_policy_by_data_name(name)``` to access a list of ``
 
 Return an empty list if there is not policy that use the data ```name```.
 
+#### Access Policy By Id
+
+Use member function ```query_policy_by_id(id)``` to access a policy with that id.
+
+Reutrn None is the id doesn't exist.
+
 ### Evaluate a Policy
 
 Call ```evaluate()``` member function for a policy object to evaluate a boolean result during runtime.
@@ -151,6 +157,12 @@ Use ```action``` attribute of a policy object to access its action.
 The action value is either 'activate' or 'deactivate'.
 
 Default to 'activate' if not given in policy file.
+
+### Get Id of a Policy
+
+Use ```id``` attribute of a policy object to access its id.
+
+It is an integer.
 
 ### Debug
 
