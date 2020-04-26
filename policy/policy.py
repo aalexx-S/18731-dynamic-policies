@@ -26,9 +26,18 @@ class Policy:
         The final evaluation result is not a boolean.
     """
     def evaluate(self):
-        re = self.__condition.evaluate()
+        re = False
+        try:
+            re = self.__condition.evaluate()
+        except Exception as e:
+            # on exception, set evaluation result to False
+            print('Warning, exception caught when evaluating. Return false.')
+            print(e)
+            return False
+
         if not isinstance(re, bool):
-            raise TypeError('The evaluation result is not a boolean. Got {0}.'.format(re))
+            print(f'Warning, the evaluation result is not a boolean. Got {re}. Return false.')
+            return False
         return re
 
     @ property
