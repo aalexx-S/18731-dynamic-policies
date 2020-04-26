@@ -44,6 +44,9 @@ class DevicesManager:
         self.monitor_thread = _DevicesMonitor.start(self, status_callback)
         return
     
+    def stop(self):
+        return
+    
     def wait(self):
         if self.monitor_thread is not None:
             self.monitor_thread.join()
