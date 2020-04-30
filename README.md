@@ -18,7 +18,7 @@ A simple class that manage current activated rules.
 
 It requres a path to a output file.
 
-Add and remove rules by calling ```add_rules``` and ```remove_rules``` with a list of strings.
+Add and remove rules by calling ```add_rules``` and ```remove_rules``` with a list of policy id.
 
 Update the output file by calling ```generate_output``` function.
 
@@ -27,22 +27,26 @@ Example usage:
 ```python
 from rule_manager import RuleManager
 
-rule_manager = RuleManager('path_to_output')
+rule_manager = RuleManager('path_to_output', query_rule_by_id_handle)
 
-rule_manager.add_rules(['rule1', 'rule2', 'rule3'])
+rule_manager.add_rules(['0', '2', '3'])
 
-rule_manager.remove_rules(['rule2'])
+rule_manager.remove_rules(['2'])
 
 rule_manager.generate_output()
 ```
 
-By default, the original content in the output file will be wipped out.
+```query_rule_by_id_handle``` is a function that allows rule manager to query path to rule file by policy id.
+
+By default, the original content in the output file will be wiped out.
 
 Pass ```True``` at object construction to keep the original content in the output file.
 
 ```python
-rule_manager = RuleManager('path_to_output', True)
+rule_manager = RuleManager('path_to_output', query_rule_by_id_handle, True)
 ```
+
+You can get all activated policy id by calling ```get_activated_id``` function.
 
 ### FIFO Manager
 
