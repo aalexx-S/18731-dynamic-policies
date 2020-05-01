@@ -62,7 +62,7 @@ get_all_status()
 
 # Simulate device status update
 Use this command to update device status
-`wget http://localhost:8080/?device=<deviceName>&status_name=<statusName>&status_value=<statusValue>`
+`wget "http://localhost:8080/?device=<deviceName>&status_name=<statusName>&status_value=<statusValue>"`
 
 Three params (Refer to devices.json of valid value to these fields)
 - device
