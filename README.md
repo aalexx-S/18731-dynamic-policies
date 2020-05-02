@@ -8,7 +8,21 @@
 
 ## Usage
 
-TODO
+Use ```python3 main.py -h``` for help.
+
+```
+python3 main.py config.json
+```
+
+Please refer to ```example_config.json```.
+All fields must exist.
+
+The program will run forever until it receives sigint.
+
+It will enter cleanup process after receiving the first sigint, and it will be killed brutefully by the second sigint.
+
+Add ```--debug``` flag to print stderr, otherwise all stderr messages are dumped to devnull.
+
 
 ## Modules
 

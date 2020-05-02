@@ -1,4 +1,5 @@
 import os
+import tempfile
 
 """Rule Manager
 Manage rule sets.
@@ -35,8 +36,7 @@ class RuleManager:
                 with open(output_destination, 'r') as of:
                     self.original_content = of.read()
             except:
-                print('Error happens when reading {0} in init of RuleManager.'.format(output_destination))
-                raise
+                print(f'[Info] Cannot read {output_destination} to save original content. Ignoring.')
 
     def add_rules(self, list_of_id):
         """
@@ -94,24 +94,30 @@ class RuleManager:
         Read the content of the files in the activated rule set and copy them into the output file.
         The original content of the output file will be kept/wipped based on setting.
         """
-        try:
-            removed_policy = []
-            with open(self.output_destination, 'w') as of:
-                # put the original content first
-                if self.keep_original_content:
-                    print(self.original_content, file=of)
-                # output rules
-                for rfp in self.rules:
-                    rule = self.query_rule_by_id_callback(rfp)
-                    if rule is None:
-                        removed_policy.append(rfp)
-                        continue
-                    with open(rule, 'r') as rf:
-                        tmp = rf.read()
-                        print(tmp, file=of)
+        # output to a tempfile first just in case something goes wrong
+        # if something really goes wrong, don't change the output file
+        tf = tempfile.TemporaryFile('w+')
+        removed_policy = []
+        # put the original content first
+        if self.keep_original_content:
+            print(self.original_content, file=tf)
+        # output rules
+        for rfp in self.rules:
+            rule = self.query_rule_by_id_callback(rfp)
+            if rule is None:
+                removed_policy.append(rfp)
+                continue
+            with open(rule, 'r') as rf:
+                tmp = rf.read()
+                print(tmp, file=tf)
 
-        except:
-            raise
+        # output to actual output file
+        # rewind tempfile and copy line by line
+        tf.seek(0)
+        with open(self.output_destination, 'w') as of:
+            for line in tf:
+                print(line.rstrip(), file=of)
+        tf.close()
 
         # handle removed policies
         self.remove_rules(removed_policy)
