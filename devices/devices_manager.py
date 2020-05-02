@@ -44,6 +44,10 @@ class DevicesManager:
         self.monitor_thread = _DevicesMonitor.start(self, status_callback)
         return
     
+    def stop(self):
+        _DevicesMonitor.stop()
+        return
+    
     def wait(self):
         if self.monitor_thread is not None:
             self.monitor_thread.join()
@@ -71,6 +75,7 @@ class _DevicesMonitor:
 
     callback = None
     devManager = None
+    httpd = None
 
     class DeviceThread(threading.Thread):
         def run(self):
@@ -78,14 +83,15 @@ class _DevicesMonitor:
             handler_class = _MyHandler
             server_class = HTTPServer
 
-            httpd = HTTPServer(server_address, handler_class)
+            _DevicesMonitor.httpd = HTTPServer(server_address, handler_class)
             print("server running...")
 
             try: 
-                httpd.serve_forever()
-            except KeyboardInterrupt: pass
+                _DevicesMonitor.httpd.serve_forever()
+            except KeyboardInterrupt: 
+                pass
 
-            httpd.server_close()
+            _DevicesMonitor.httpd.server_close()
 
     
     @staticmethod
@@ -99,12 +105,23 @@ class _DevicesMonitor:
         return dev_thread
 
     @staticmethod
+    def stop():
+        if _DevicesMonitor.httpd != None:
+            _DevicesMonitor.httpd.shutdown()
+            _DevicesMonitor.httpd = None
+
+    @staticmethod
     def update_status(devname, status, value):
-        # from devices_manager import DevicesManager
-        if _DevicesMonitor.devManager.find_devices(devname) is None:
+        dev = _DevicesMonitor.devManager.find_devices(devname)
+        if dev is None:
             print('device %s not exist' % (devname))
             return
         
+        stype = dev.get_status_type(status)
+        if stype is None:
+            print('status_name %s not exist' % (status))
+            return
+
         db = DevicesStatusDB.default_instance()
         db.set_status(devname, status, value)
         if _DevicesMonitor.callback is not None:

@@ -26,7 +26,11 @@ class DevicesStatusDB:
 
     def get_status(self, dev, name):
         key = dev + '.' + name
-        return self.r.get(key)
+        if self.r.type(key).decode('utf-8') != 'string':
+            return None
+        
+        value = self.r.get(key).decode('utf-8')
+        return value
 
     def set_status(self, dev, name, value):
         key = dev + '.' + name
