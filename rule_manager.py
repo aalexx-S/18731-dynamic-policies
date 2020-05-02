@@ -74,7 +74,13 @@ class RuleManager:
 
         return ret
 
-    def get_activated_ids(self):
+    def clear_rules(self):
+        """
+        Remove all activated rules.
+        """
+        self.rules = set()
+
+    def get_activated_id(self):
         """
         Get a set of activated ids.
         Returns:
