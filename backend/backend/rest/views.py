@@ -2,13 +2,19 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.http import HttpResponse
 from rest_framework.response import Response
-
+from django.http import JsonResponse
 import os
 import sys
-sys.path.insert(1, '/home/ubuntu/18731-dynamic-policies/')
-from policy.policyparser import *
 
-policy_path='/home/ubuntu/18731-dynamic-policies/backend/backend/rest/policies/example_policy.json'
+#imports from project
+folder_path=os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(folder_path, '..','..','..' ))
+from policy.policyparser import *
+from devices.devices_manager import DevicesManager
+from devices.devices_status_db import DevicesStatusDB
+
+
+policy_path=os.path.join(folder_path,'policies','current_policy.json')
 
 @api_view(['GET', 'POST' ])
 def get_policy_list(request):
@@ -69,15 +75,64 @@ def set_policy_file(request):
     Returns:
     response --  HttpResponse containing the file or the eexception
     """
-    print("GOT SUC")
-    #name=request.POST.get('name')
+
     file_received=request.FILES['policy_file']
     fr = file_received.read()
-    print("READ SUC")
     #The biggest number in the labels will be the number of outputs
     #for line in f.decode("utf-8").split("\n"):
     file = open(policy_path, 'wb')
     file.write(fr)
     file.close()
-    print("WRITE SUC")
+    return Response("Success")
+
+def device_changed(dev, status, value):
+    print('Received status update of ' + dev + '.' + status + '=' + value)
+
+@api_view(['GET', 'POST' ])
+def get_all_devices(request):
+    """
+    API endpoint that allows to download a data set with an specific id
+    
+    Arguments:
+    request -- a request containing a dataset_id as an http GET variable
+    Returns:
+    response --  HttpResponse containing the file or the eexception
+    """
+
+    devmgr = DevicesManager()
+    devmgr.start(device_changed, redishost='127.0.0.1')
+    devs=devmgr.get_all_devices()
+    resp={}
+
+    for dev in devs:
+        status={}
+        for status_name in dev.list_status():
+            status[status_name]=dev.get_status_value(status_name)
+        resp[dev.get_device_name()]=status
+    return Response(resp)
+
+@api_view(['GET', 'POST' ])
+def get_device_list(request):
+    """
+    API endpoint that allows to download a data set with an specific id
+    
+    Arguments:
+    request -- a request containing a dataset_id as an http GET variable
+    Returns:
+    response --  HttpResponse containing the file or the eexception
+    """
+
+    devmgr = DevicesManager()
+    devmgr.start(device_changed, redishost='127.0.0.1')
+    print(devmgr.get_all_devices())
+
+    motiondev = devmgr.find_devices('HomeMotion')
+    if motiondev:
+        print(motiondev.list_status())
+        print(motiondev.get_all_status())
+        
+    stovedev = devmgr.find_devices('Stove1')
+    if stovedev:
+        print(stovedev.get_all_status())
+
     return Response("Success")

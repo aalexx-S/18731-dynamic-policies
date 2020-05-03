@@ -5,7 +5,7 @@ def device_changed(dev, status, value):
 
 if __name__ == "__main__" :
     devmgr = DevicesManager()
-    devmgr.start(device_changed)
+    devmgr.start(device_changed, redishost='127.0.0.1')
     print(devmgr.get_all_devices())
 
     motiondev = devmgr.find_devices('HomeMotion')
