@@ -33,7 +33,6 @@ class ConditionToken:
         try:
             return self.action.operate(self.input_tokens)
         except ValueError:
-            print(self.__str__())
             raise
 
     @ property
