@@ -7,5 +7,6 @@ services:
       - ./:/policyserver
   redis:
     image: redis
+    hostname: redis
     ports:
-    - 6379:6379
+      - 6379:6379

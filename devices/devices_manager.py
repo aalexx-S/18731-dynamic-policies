@@ -14,7 +14,7 @@ class DevicesManager:
         self.alldevs = {}
         self.monitor_thread = None
 
-    def start(self, status_callback = None, dev_path = '', redishost = 'redis', redisport = '6379'):
+    def start(self, status_callback = None, dev_path = '', redishost = 'redis', redisport = '6379', statusport = None):
         """
         Call this function to initialize device manager. This function will 
         read in all available devices and start the HTTP server to monitor
@@ -23,6 +23,8 @@ class DevicesManager:
         :param string dev_path: file path that contains list of all devices.
         :param string redishost: hostname of redis server
         :param string redisport: port of redis server
+        :param string statusport: the port of http server to receive device update, 
+            the server wil not be started if caller do not provide port
         """
         mydir = os.path.dirname(os.path.abspath(__file__))
         if not dev_path:
@@ -34,14 +36,14 @@ class DevicesManager:
             for name in devData:
                 newdev = Device()
                 newdev.parse(devData[name])
-                # name = newdev.get_device_name()
                 self.alldevs[name] = newdev
 
         db = DevicesStatusDB(redishost, redisport)
         DevicesStatusDB.set_default(db)
 
         # Create a thread to bring up an HTTP server for devices status monitor
-        self.monitor_thread = _DevicesMonitor.start(self, status_callback)
+        if statusport is not None:
+            self.monitor_thread = _DevicesMonitor.start(self, status_callback, int(statusport))
         return
     
     def stop(self):
@@ -78,8 +80,13 @@ class _DevicesMonitor:
     httpd = None
 
     class DeviceThread(threading.Thread):
+        
+        def __init__(self, port):
+            super().__init__()
+            self.port = port
+
         def run(self):
-            server_address = ("localhost", 8080)
+            server_address = ("localhost", self.port)
             handler_class = _MyHandler
             server_class = HTTPServer
 
@@ -95,11 +102,11 @@ class _DevicesMonitor:
 
     
     @staticmethod
-    def start(manager, cb):
+    def start(manager, cb, statusport):
         assert manager is not None
         _DevicesMonitor.callback = cb
         _DevicesMonitor.devManager = manager
-        dev_thread = _DevicesMonitor.DeviceThread()
+        dev_thread = _DevicesMonitor.DeviceThread(statusport)
         dev_thread.start()
 
         return dev_thread
