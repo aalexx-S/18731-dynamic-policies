@@ -25,7 +25,60 @@ http://www.templatemo.com/tm-489-strategy
           <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
           <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
           <![endif]-->
+    <style>
+        ol {
+            list-style: none;
+            counter-reset: my-awesome-counter;
+        }
 
+        li {
+            counter-increment: my-awesome-counter;
+            margin: 0.25rem;
+        }
+
+        li::before {
+            content: "-";
+            background: #2c343b;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: inline-block;
+            line-height: 2rem;
+            color: white;
+            text-align: center;
+            margin-right: 0.5rem;
+        }
+
+        ol ol li::before {
+            background: #577BCE;
+        }
+
+        ol ol ol li::before {
+            background: #EE9EFF;
+        }
+
+        #customers {
+            border-collapse: collapse;
+            width: 100%;
+
+        }
+
+        #customers td,
+        #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #2c343b;
+            color: white;
+            
+        }
+    </style>
 </head>
 
 <body>
@@ -38,7 +91,8 @@ http://www.templatemo.com/tm-489-strategy
             <li class="selected">
                 <div class="cd-full-width">
                     <div class="tm-slide-content-div">
-                        <form action="http://dynamicpolicies.xyz:8000/set_policy_file" method="post"  enctype="multipart/form-data" id="search-form">
+                        <form  id="form_upload"  action="http://dynamicpolicies.xyz:8000/set_policy_file" method="post"
+                            enctype="multipart/form-data" id="search-form">
                             <i class="fa fa-cogs tm-slide-icon"></i>
                             <h2 class="text-uppercase">Dynamic Policies</h2>
                             <p class="m-b-mid">Network Security</p>
@@ -74,16 +128,62 @@ http://www.templatemo.com/tm-489-strategy
 
             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                 <div class="tm-media-text-container">
-                    <h3 class="tm-media-title tm-gray-text">Number of policies: <b id="id_pol_count"> ...</b></h3>
-                    <h3 class="tm-media-title tm-gray-text">Policy file: </h3>
-                    <textarea id="id_pol_file" rows="10" style="width: 100%;">
-                        ...
-                    </textarea>
+
+                    <table id="customers">
+                        <tr>
+                            <th>Active/Inactive policies</th>
+ 
+                        </tr>
+                        <tr>
+                            <td>
+                                <ol id="id_active_pol">
+                                </ol>
+                            </td>
+   
+                        </tr>
+                    </table>
+
+                    <table id="customers">
+                        <tr>
+                            <th>Status of Devices</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <ol id="id_dev_status">
+                                </ol>
+                            </td>
+                        </tr>
+                    </table>
+                    <table id="customers">
+                        <tr>
+                            <th>Number of policies</th>
+                        </tr>
+                        <tr>
+                             <td >
+                                <ol >
+                                    <li>
+                                        <b id="id_pol_count"> </b>
+                                    </li>
+                                </ol>
+                            </td>
+                        </tr>
+                    </table>
+                    <table id="customers">
+                        <tr>
+                            <th>Policy file</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <textarea id="id_pol_file" rows="10" style="width: 100%;">
+                                    ...
+                                </textarea>
+                            </td>
+                        </tr>
+                    </table>                    
 
                 </div>
             </div>
         </div>
-
     </div>
 
     <section class="tm-section tm-section-3 tm-bg-purple">
@@ -218,24 +318,51 @@ http://www.templatemo.com/tm-489-strategy
     <script>
 
         $(document).ready(function () {
-
+            url = "http://dynamicpolicies.xyz:8000/"
+            url = "http://localhost:8000/"
             /* Auto play bootstrap carousel 
             * http://stackoverflow.com/questions/13525258/twitter-bootstrap-carousel-autoplay-on-load
             -----------------------------------------------------------------------------------------*/
 
-            $.get("http://dynamicpolicies.xyz:8000/get_policy_count", function (data) {
+            $("#form_upload").attr('action', url+"sset_policy_file");
+
+            $.get(url + "get_policy_count", function (data) {
 
                 $("#id_pol_count").html(data);
-                
+
             });
 
-            $.get("http://dynamicpolicies.xyz:8000/get_policy_file", function (data) {
-
+            $.get(url + "get_policy_file", function (data) {
                 $("#id_pol_file").html(data);
+            });
 
+            $.get(url + "get_all_devices", function (data) {
+
+                for (i = 0; i < Object.keys(data).length; i++) {
+                    tag = "";
+                    dev_name = Object.keys(data)[i];
+                    tag += "<li>" + dev_name + "<ol>";
+                    for (j = 0; j < Object.keys(data[Object.keys(data)[i]]).length; j++) {
+                        // $("#id_dev_status").append( "<li>" + Object.keys(data[Object.keys(data)[i]])[j] + "</li>" );
+                        status_name = Object.keys(data[dev_name])[j]
+                        tag += "<li>" + status_name + ": " + data[dev_name][status_name] + "</li>";
+                    }
+                    tag += "</ol></li>";
+                    $("#id_dev_status").append(tag);
+                }
             });
 
 
+            $.get(url + "get_active_policies", function (data) {
+                data = JSON.parse(data)
+                for (i = 0; i < data.rules.length; i++) {
+                    tag = "";
+                    tag += "<li>" + "Id: " + data.rules[i]["id"] + " | Status: " + data.rules[i]["status"] + "<ol>";
+
+                    tag += "</li>";
+                    $("#id_active_pol").append(tag);
+                }
+            });
 
 
 

@@ -25,7 +25,12 @@ SECRET_KEY = '!84u9_mqgkjaqoj1dugr)4v5*^l(77q@@zv-a6xw@x0(+aoiv4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['35.165.168.219', 'dynamicpolicies.xyz']
+ALLOWED_HOSTS = [
+    '35.165.168.219', 
+    'dynamicpolicies.xyz',
+    'localhost',
+    '127.0.0.1'
+    ]
 
 CORS_ORIGIN_ALLOW_ALL=True
 

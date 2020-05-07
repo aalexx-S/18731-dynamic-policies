@@ -2,13 +2,23 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.http import HttpResponse
 from rest_framework.response import Response
-
+from django.http import JsonResponse
 import os
 import sys
-sys.path.insert(1, '/home/ubuntu/18731-dynamic-policies/')
-from policy.policyparser import *
 
-policy_path='/home/ubuntu/18731-dynamic-policies/backend/backend/rest/policies/example_policy.json'
+
+from .apps import *
+
+
+#imports from project
+folder_path=os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.join(folder_path, '..','..','..' ))
+from policy.policyparser import *
+from devices.devices_manager import DevicesManager
+from devices.devices_status_db import DevicesStatusDB
+from fifo_manager import FIFOManager
+
+policy_path=os.path.join(folder_path,'policies','current_policy.json')
 
 @api_view(['GET', 'POST' ])
 def get_policy_list(request):
@@ -62,22 +72,97 @@ def get_policy_count(request):
 @api_view(['GET', 'POST' ])
 def set_policy_file(request):
     """
-    API endpoint that allows to download a data set with an specific id
+    Persists a policy file on the path established on policy_path
     
     Arguments:
-    request -- a request containing a dataset_id as an http GET variable
+    request -- a request containing a policy_file POST variable
     Returns:
     response --  HttpResponse containing the file or the eexception
     """
-    print("GOT SUC")
-    #name=request.POST.get('name')
+
     file_received=request.FILES['policy_file']
     fr = file_received.read()
-    print("READ SUC")
     #The biggest number in the labels will be the number of outputs
     #for line in f.decode("utf-8").split("\n"):
     file = open(policy_path, 'wb')
     file.write(fr)
     file.close()
-    print("WRITE SUC")
+
+    fm = FIFOManager('D2E', 'w')
+    fm.write('{"task":"upload_policy"}', 5)
+
     return Response("Success")
+
+
+@api_view(['GET', 'POST' ])
+def get_all_devices(request):
+    """
+    Obtains a list of all devices
+    
+    Arguments:
+    request -- An empty request
+    Returns:
+    response --  HttpResponse containing the list of devices in JSON format
+    """
+    
+    devmgr = RestConfig.devmgr
+    devs=devmgr.get_all_devices()
+    resp={}
+
+    for dev in devs:
+        status={}
+        for status_name in dev.list_status():
+            status[status_name]=dev.get_status_value(status_name)
+        resp[dev.get_device_name()]=status
+    return Response(resp)
+
+@api_view(['GET', 'POST' ])
+def get_active_policies(request):
+    """
+    Obtains a list of active policies from FIFO exposing policies
+    
+    Arguments:
+    request -- An empty request
+    Returns:
+    response --  HttpResponse containing the list of active/inactive policies
+    in JSON format
+    """
+    
+    fm = FIFOManager('D2E', 'w')
+    fm.write('{"task":"query"}', 5)
+    fm1 = FIFOManager('E2D', 'r')
+
+    return Response(fm1.read())
+
+@api_view(['GET', 'POST' ])
+def set_state(request):
+    """
+    Obtains a list of active policies from FIFO exposing policies
+    
+    Arguments:
+    request -- An empty request
+    Returns:
+    response --  HttpResponse containing the list of active/inactive policies
+    in JSON format
+    """
+    
+    RestConfig.myvar="it was set"
+
+    return Response("worked")
+
+
+
+@api_view(['GET', 'POST' ])
+def get_state(request):
+    """
+    Obtains a list of active policies from FIFO exposing policies
+    
+    Arguments:
+    request -- An empty request
+    Returns:
+    response --  HttpResponse containing the list of active/inactive policies
+    in JSON format
+    """
+    
+
+    return Response(RestConfig.myvar)

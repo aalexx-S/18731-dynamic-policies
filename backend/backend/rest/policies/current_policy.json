@@ -6,7 +6,7 @@
 			"input": [
 				{
 					"type": "device",
-					"value": "Stove1.heatlevel"
+					"value": "device1.data111"
 				},
 				{
 					"type": "int",
@@ -28,11 +28,11 @@
 					"input": [
 						{
 							"type": "device",
-							"value": "Stove1.powerlevel"
+							"value": "thermalmeter1.data1"
 						},
 						{
 							"type": "device",
-							"value": "Stove1.heatlevel"
+							"value": "thermalmeter2.data1"
 						}
 					]
 				},

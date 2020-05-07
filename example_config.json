@@ -2,7 +2,7 @@
     "policyfile": "policy/example_policy.json",
     "output": "example_output",
     "devicespec": "devices/devices.json",
-    "redisip": "redis",
+    "redisip": "127.0.0.1",
     "redisport": "6379",
     "status_server_port": "8080"
 }
