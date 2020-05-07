@@ -6,6 +6,10 @@ from django.http import JsonResponse
 import os
 import sys
 
+
+from .apps import *
+
+
 #imports from project
 folder_path=os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(folder_path, '..','..','..' ))
@@ -89,8 +93,6 @@ def set_policy_file(request):
 
     return Response("Success")
 
-def device_changed(dev, status, value):
-    print('Received status update of ' + dev + '.' + status + '=' + value)
 
 @api_view(['GET', 'POST' ])
 def get_all_devices(request):
@@ -102,17 +104,14 @@ def get_all_devices(request):
     Returns:
     response --  HttpResponse containing the list of devices in JSON format
     """
-
-    devmgr = DevicesManager()
-    devmgr.start(device_changed, redishost='127.0.0.1', statusport = '8080')
+    
+    devmgr = RestConfig.devmgr
     devs=devmgr.get_all_devices()
-    print(devs)
     resp={}
 
     for dev in devs:
         status={}
         for status_name in dev.list_status():
-            print(dev.get_status_value(status_name))
             status[status_name]=dev.get_status_value(status_name)
         resp[dev.get_device_name()]=status
     return Response(resp)
@@ -134,3 +133,36 @@ def get_active_policies(request):
     fm1 = FIFOManager('E2D', 'r')
 
     return Response(fm1.read())
+
+@api_view(['GET', 'POST' ])
+def set_state(request):
+    """
+    Obtains a list of active policies from FIFO exposing policies
+    
+    Arguments:
+    request -- An empty request
+    Returns:
+    response --  HttpResponse containing the list of active/inactive policies
+    in JSON format
+    """
+    
+    RestConfig.myvar="it was set"
+
+    return Response("worked")
+
+
+
+@api_view(['GET', 'POST' ])
+def get_state(request):
+    """
+    Obtains a list of active policies from FIFO exposing policies
+    
+    Arguments:
+    request -- An empty request
+    Returns:
+    response --  HttpResponse containing the list of active/inactive policies
+    in JSON format
+    """
+    
+
+    return Response(RestConfig.myvar)
