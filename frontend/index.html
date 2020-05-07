@@ -91,7 +91,7 @@ http://www.templatemo.com/tm-489-strategy
             <li class="selected">
                 <div class="cd-full-width">
                     <div class="tm-slide-content-div">
-                        <form action="http://dynamicpolicies.xyz:8000/set_policy_file" method="post"
+                        <form  id="form_upload"  action="http://dynamicpolicies.xyz:8000/set_policy_file" method="post"
                             enctype="multipart/form-data" id="search-form">
                             <i class="fa fa-cogs tm-slide-icon"></i>
                             <h2 class="text-uppercase">Dynamic Policies</h2>
@@ -323,6 +323,8 @@ http://www.templatemo.com/tm-489-strategy
             /* Auto play bootstrap carousel 
             * http://stackoverflow.com/questions/13525258/twitter-bootstrap-carousel-autoplay-on-load
             -----------------------------------------------------------------------------------------*/
+
+            $("#form_upload").attr('action', url+"sset_policy_file");
 
             $.get(url + "get_policy_count", function (data) {
 

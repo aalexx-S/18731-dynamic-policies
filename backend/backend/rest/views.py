@@ -68,10 +68,10 @@ def get_policy_count(request):
 @api_view(['GET', 'POST' ])
 def set_policy_file(request):
     """
-    API endpoint that allows to download a data set with an specific id
+    Persists a policy file on the path established on policy_path
     
     Arguments:
-    request -- a request containing a dataset_id as an http GET variable
+    request -- a request containing a policy_file POST variable
     Returns:
     response --  HttpResponse containing the file or the eexception
     """
@@ -83,6 +83,10 @@ def set_policy_file(request):
     file = open(policy_path, 'wb')
     file.write(fr)
     file.close()
+
+    fm = FIFOManager('D2E', 'w')
+    fm.write('{"task":"upload_policy"}', 5)
+
     return Response("Success")
 
 def device_changed(dev, status, value):
@@ -91,12 +95,12 @@ def device_changed(dev, status, value):
 @api_view(['GET', 'POST' ])
 def get_all_devices(request):
     """
-    API endpoint that allows to download a data set with an specific id
+    Obtains a list of all devices
     
     Arguments:
-    request -- a request containing a dataset_id as an http GET variable
+    request -- An empty request
     Returns:
-    response --  HttpResponse containing the file or the eexception
+    response --  HttpResponse containing the list of devices in JSON format
     """
 
     devmgr = DevicesManager()
@@ -116,21 +120,17 @@ def get_all_devices(request):
 @api_view(['GET', 'POST' ])
 def get_active_policies(request):
     """
-    API endpoint that allows to download a data set with an specific id
+    Obtains a list of active policies from FIFO exposing policies
     
     Arguments:
-    request -- an empty request 
+    request -- An empty request
     Returns:
-    response --  HttpResponse containing the file or the eexception
+    response --  HttpResponse containing the list of active/inactive policies
+    in JSON format
     """
-    print("Came in")
+    
     fm = FIFOManager('D2E', 'w')
-    print("111111")
     fm.write('{"task":"query"}', 5)
-    print("222222")
     fm1 = FIFOManager('E2D', 'r')
-    print("33333")
-
-    print("44444")
 
     return Response(fm1.read())

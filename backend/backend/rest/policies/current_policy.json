@@ -6,7 +6,7 @@
 			"input": [
 				{
 					"type": "device",
-					"value": "device1.data1"
+					"value": "device1.data111"
 				},
 				{
 					"type": "int",
