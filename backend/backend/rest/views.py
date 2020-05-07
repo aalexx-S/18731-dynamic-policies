@@ -12,7 +12,7 @@ sys.path.append(os.path.join(folder_path, '..','..','..' ))
 from policy.policyparser import *
 from devices.devices_manager import DevicesManager
 from devices.devices_status_db import DevicesStatusDB
-
+from fifo_manager import FIFOManager
 
 policy_path=os.path.join(folder_path,'policies','current_policy.json')
 
@@ -100,39 +100,37 @@ def get_all_devices(request):
     """
 
     devmgr = DevicesManager()
-    devmgr.start(device_changed, redishost='127.0.0.1')
+    devmgr.start(device_changed, redishost='127.0.0.1', statusport = '8080')
     devs=devmgr.get_all_devices()
+    print(devs)
     resp={}
 
     for dev in devs:
         status={}
         for status_name in dev.list_status():
+            print(dev.get_status_value(status_name))
             status[status_name]=dev.get_status_value(status_name)
         resp[dev.get_device_name()]=status
     return Response(resp)
 
 @api_view(['GET', 'POST' ])
-def get_device_list(request):
+def get_active_policies(request):
     """
     API endpoint that allows to download a data set with an specific id
     
     Arguments:
-    request -- a request containing a dataset_id as an http GET variable
+    request -- an empty request 
     Returns:
     response --  HttpResponse containing the file or the eexception
     """
+    print("Came in")
+    fm = FIFOManager('D2E', 'w')
+    print("111111")
+    fm.write('{"task":"query"}', 5)
+    print("222222")
+    fm1 = FIFOManager('E2D', 'r')
+    print("33333")
 
-    devmgr = DevicesManager()
-    devmgr.start(device_changed, redishost='127.0.0.1')
-    print(devmgr.get_all_devices())
+    print("44444")
 
-    motiondev = devmgr.find_devices('HomeMotion')
-    if motiondev:
-        print(motiondev.list_status())
-        print(motiondev.get_all_status())
-        
-    stovedev = devmgr.find_devices('Stove1')
-    if stovedev:
-        print(stovedev.get_all_status())
-
-    return Response("Success")
+    return Response(fm1.read())

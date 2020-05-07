@@ -45,4 +45,9 @@ urlpatterns = [
         views.get_all_devices,
         name='get_all_devices'
     ),
+        url(
+        r'^get_active_policies',
+        views.get_active_policies,
+        name='get_active_policies'
+    ),
 ]

@@ -38,7 +38,7 @@ http://www.templatemo.com/tm-489-strategy
 
         li::before {
             content: "-";
-            background: #662974;
+            background: #2c343b;
             width: 2rem;
             height: 2rem;
             border-radius: 50%;
@@ -50,11 +50,33 @@ http://www.templatemo.com/tm-489-strategy
         }
 
         ol ol li::before {
-            background: #DE51FF;
+            background: #577BCE;
         }
 
         ol ol ol li::before {
             background: #EE9EFF;
+        }
+
+        #customers {
+            border-collapse: collapse;
+            width: 100%;
+
+        }
+
+        #customers td,
+        #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+
+        #customers th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #2c343b;
+            color: white;
+            
         }
     </style>
 </head>
@@ -107,16 +129,57 @@ http://www.templatemo.com/tm-489-strategy
             <div class="col-xs-12 col-sm-8 col-md-8 col-lg-8">
                 <div class="tm-media-text-container">
 
-                    <h3 class="tm-media-title tm-gray-text">Status of Devices: </h3>
-                    <ol id="id_dev_status">
+                    <table id="customers">
+                        <tr>
+                            <th>Active/Inactive policies</th>
+ 
+                        </tr>
+                        <tr>
+                            <td>
+                                <ol id="id_active_pol">
+                                </ol>
+                            </td>
+   
+                        </tr>
+                    </table>
 
-                    </ol>
-                    <h3 class="tm-media-title tm-gray-text">Number of policies: <b id="id_pol_count"> ...</b></h3>
-
-                    <h3 class="tm-media-title tm-gray-text">Policy file: </h3>
-                    <textarea id="id_pol_file" rows="10" style="width: 100%;">
-                        ...
-                    </textarea>
+                    <table id="customers">
+                        <tr>
+                            <th>Status of Devices</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <ol id="id_dev_status">
+                                </ol>
+                            </td>
+                        </tr>
+                    </table>
+                    <table id="customers">
+                        <tr>
+                            <th>Number of policies</th>
+                        </tr>
+                        <tr>
+                             <td >
+                                <ol >
+                                    <li>
+                                        <b id="id_pol_count"> </b>
+                                    </li>
+                                </ol>
+                            </td>
+                        </tr>
+                    </table>
+                    <table id="customers">
+                        <tr>
+                            <th>Policy file</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <textarea id="id_pol_file" rows="10" style="width: 100%;">
+                                    ...
+                                </textarea>
+                            </td>
+                        </tr>
+                    </table>                    
 
                 </div>
             </div>
@@ -272,22 +335,32 @@ http://www.templatemo.com/tm-489-strategy
             });
 
             $.get(url + "get_all_devices", function (data) {
-                
-                for(i=0;i<Object.keys(data).length; i++){
-                    tag="";
-                    dev_name=Object.keys(data)[i];
-                    tag+="<li>" + dev_name + "<ol>";
-                    for(j=0;j<Object.keys(data[Object.keys(data)[i]]).length; j++){
-                       // $("#id_dev_status").append( "<li>" + Object.keys(data[Object.keys(data)[i]])[j] + "</li>" );
-                       status_name=Object.keys(data[dev_name])[j]
-                       tag+="<li>" + status_name + ": "+ data[dev_name][status_name] + "</li>" ;
+
+                for (i = 0; i < Object.keys(data).length; i++) {
+                    tag = "";
+                    dev_name = Object.keys(data)[i];
+                    tag += "<li>" + dev_name + "<ol>";
+                    for (j = 0; j < Object.keys(data[Object.keys(data)[i]]).length; j++) {
+                        // $("#id_dev_status").append( "<li>" + Object.keys(data[Object.keys(data)[i]])[j] + "</li>" );
+                        status_name = Object.keys(data[dev_name])[j]
+                        tag += "<li>" + status_name + ": " + data[dev_name][status_name] + "</li>";
                     }
-                    tag+="</ol></li>";
+                    tag += "</ol></li>";
                     $("#id_dev_status").append(tag);
                 }
             });
 
 
+            $.get(url + "get_active_policies", function (data) {
+                data = JSON.parse(data)
+                for (i = 0; i < data.rules.length; i++) {
+                    tag = "";
+                    tag += "<li>" + "Id: " + data.rules[i]["id"] + " | Status: " + data.rules[i]["status"] + "<ol>";
+
+                    tag += "</li>";
+                    $("#id_active_pol").append(tag);
+                }
+            });
 
 
 
