@@ -6,9 +6,7 @@ from django.http import JsonResponse
 import os
 import sys
 
-
 from .apps import *
-
 
 #imports from project
 folder_path=os.path.dirname(os.path.abspath(__file__))
@@ -19,6 +17,10 @@ from devices.devices_status_db import DevicesStatusDB
 from fifo_manager import FIFOManager
 
 policy_path=os.path.join(folder_path,'policies','current_policy.json')
+
+
+
+
 
 @api_view(['GET', 'POST' ])
 def get_policy_list(request):
@@ -128,9 +130,10 @@ def get_active_policies(request):
     in JSON format
     """
     
-    fm = FIFOManager('D2E', 'w')
+    folder_path=os.path.dirname(os.path.abspath(__file__))
+    fm = FIFOManager(os.path.join(folder_path,'..','..','..','D2E'), 'w')
     fm.write('{"task":"query"}', 5)
-    fm1 = FIFOManager('E2D', 'r')
+    fm1 = FIFOManager(os.path.join(folder_path,'..','..','..','E2D'), 'r')
 
     return Response(fm1.read())
 
@@ -163,6 +166,5 @@ def get_state(request):
     response --  HttpResponse containing the list of active/inactive policies
     in JSON format
     """
-    
 
     return Response(RestConfig.myvar)

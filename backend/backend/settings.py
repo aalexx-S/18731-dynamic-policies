@@ -26,7 +26,7 @@ SECRET_KEY = '!84u9_mqgkjaqoj1dugr)4v5*^l(77q@@zv-a6xw@x0(+aoiv4'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    '35.165.168.219', 
+    '34.219.120.92', 
     'dynamicpolicies.xyz',
     'localhost',
     '127.0.0.1'
