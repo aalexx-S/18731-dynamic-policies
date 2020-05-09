@@ -1,0 +1,112 @@
+[
+	{
+		"condition": {
+			"type": "logic",
+			"op": "!=",
+			"input": [
+				{
+					"type": "device",
+					"value": "HomeMotion.motion"
+				},
+				{
+					"type": "boolean",
+					"value": "true"
+				}
+			]
+		},
+		"action": "activate",
+		"rule": "test_evaluate/noMotion.rules"
+	},
+	{
+		"condition": {
+			"type": "bin",
+			"op": "OR",
+			"input": [
+				{
+					"type": "logic",
+					"op": "<",
+					"input": [
+						{
+							"type": "device",
+							"value": "Thermo1.temperature"
+						},
+						{
+							"type": "float",
+							"value": "72"
+						}
+					]
+				},
+				{
+					"type": "bin",
+					"op": "AND",
+					"input": [
+						{
+							"type": "logic",
+							"op": ">=",
+							"input": [
+								{
+									"type": "device",
+									"value": "Clock1.hour"
+								},
+								{
+									"type": "int",
+									"value": "9"
+								}
+							]
+						},
+						{
+							"type": "logic",
+							"op": "<=",
+							"input": [
+								{
+									"type": "device",
+									"value": "Clock1.hour"
+								},
+								{
+									"type": "int",
+									"value": "18"
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		"action": "activate",
+		"rule": "test_evaluate/noAircon.rules"
+	},
+    {
+        "condition": {
+            "type": "logic",
+            "op": "==",
+            "input": [
+                {
+					"type": "device",
+                    "value": "Aircon1.power_on"
+                },
+                {
+                    "type":"boolean",
+                    "value":"true"
+                }
+            ]
+        },
+        "rule": "test_evaluate/withAircon.rules"
+	},
+	{
+        "condition": {
+            "type": "logic",
+            "op": ">",
+            "input": [
+                {
+					"type": "device",
+                    "value": "Stove1.heatlevel"
+                },
+                {
+                    "type":"int",
+                    "value":"0"
+                }
+            ]
+        },
+        "rule": "test_evaluate/stoveOn.rules"
+	}
+]
