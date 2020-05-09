@@ -30,5 +30,61 @@
                 "type": "int"
             }
         ]
+    },
+    "FrontWindow": {
+        "id": "0003",
+        "name": "FrontWindow",
+        "type": "window",
+        "location": "192.168.1.102",
+        "status": [
+            {
+                "name": "openlevel",
+                "type": "float"
+            }
+        ]
+    },
+    "Aircon1": {
+        "id": "0004",
+        "name": "Aircon1",
+        "type": "aircon",
+        "location": "192.168.1.103",
+        "status": [
+            {
+                "name": "power_on",
+                "type": "boolean"
+            },
+            {
+                "name": "temperature",
+                "type": "float"
+            }
+        ]
+    },
+    "Thermo1": {
+        "id": "0005",
+        "name": "Thermo1",
+        "type": "thermometer",
+        "location": "192.168.1.104",
+        "status": [
+            {
+                "name": "temperature",
+                "type": "float"
+            }
+        ]
+    },
+    "Clock1": {
+        "id": "0006",
+        "name": "Clock1",
+        "type": "clock",
+        "location": "192.168.1.105",
+        "status": [
+            {
+                "name": "hour",
+                "type": "int"
+            },
+            {
+                "name": "minute",
+                "type": "int"
+            }
+        ]
     }
 }

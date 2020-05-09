@@ -1,0 +1,8 @@
+{
+    "policyfile": "test_evaluate/policy.json",
+    "output": "output.rules",
+    "devicespec": "devices/devices.json",
+    "redisip": "redis",
+    "redisport": "6379",
+    "status_server_port": "8080"
+}
